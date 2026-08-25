@@ -6,7 +6,7 @@ updates without losing project-specific changes.
 ## 1. Add the template as a remote (one-time)
 
 ```bash
-git remote add template https://github.com/your-org/web-starter
+git remote add template https://github.com/Total-Jeopardy/web-starter
 git fetch template
 ```
 

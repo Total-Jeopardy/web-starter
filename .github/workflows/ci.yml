@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  NEXT_PUBLIC_API_BASE_URL: https://ci.example.com
+  NEXT_PUBLIC_ENV: dev
+  NEXT_PUBLIC_APP_PRESET: no_auth
+  NEXT_PUBLIC_AUTH_PROVIDER: none
+  NEXT_PUBLIC_LOG_LEVEL: info
+  NEXT_PUBLIC_REQUEST_ID_HEADER: X-Request-Id
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate skills
+        run: python skills/scripts/validate_skills.py
+
+      - name: Run template audit
+        run: python tool/template_audit.py
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run UI audit
+        run: python skills/build/nextjs-ui/scripts/nextjs_ui_audit.py . --only red
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build

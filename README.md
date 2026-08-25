@@ -18,7 +18,7 @@ the template core.
 ## Fast start
 
 ```bash
-git clone https://github.com/your-org/web-starter my_new_project
+git clone https://github.com/Total-Jeopardy/web-starter my_new_project
 cd my_new_project
 python tool/rename_app.py --app-name "My App" --package-name my-app
 npm install

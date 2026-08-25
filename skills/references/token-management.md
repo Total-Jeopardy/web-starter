@@ -24,6 +24,32 @@ have to relearn it from scratch.
 
 ---
 
+## Detecting availability — do this before assuming either tool exists
+
+Caveman and Graphify are session/tooling features, not packages this repo installs.
+Whether they exist depends on the agent environment this session is running in, not
+on anything in this codebase. Check once, near the start of a session:
+
+- **Caveman**: look for a `caveman` entry in your available skills/commands list, or
+  a `[CAVEMAN]` status indicator if your environment surfaces one. If you can't find
+  either, ask the user directly: "is Caveman active in this session?" Don't guess.
+- **Graphify**: look for a `graphify` skill/command, or a `graphify-out/` directory
+  already present at the repo root (a sign it was run before). No skill and no output
+  directory means it isn't available here — don't invent a substitute tool.
+- Do this check once. If a session gets compacted or restarted, re-check once, not
+  per task.
+
+**If either tool is genuinely unavailable in this environment**, the discipline still
+applies, just manually:
+- No Caveman → keep your own prose terse by habit: state results and next steps,
+  skip restating what the user already knows, don't narrate tool calls.
+- No Graphify → rely on `grep`/`ripgrep` for targeted lookups and the project anchors
+  table in `AGENTS.md` instead of a queryable graph; lean harder on the session read
+  cache below, since there's no relationship index to fall back on.
+
+Never block real work on either tool's absence — they're cost optimizations, not
+prerequisites. Note the absence once, then proceed.
+
 ## Caveman — output compression
 
 Caveman compresses what the agent *writes*: acknowledgments, explanations, commit
