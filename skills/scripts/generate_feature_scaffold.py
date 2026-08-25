@@ -300,11 +300,13 @@ import {{ QueryClient, QueryClientProvider }} from '@tanstack/react-query';
 import type {{ ReactNode }} from 'react';
 import {{ use{class_name} }} from '@/features/{feature}/presentation/hooks/use-{feature}';
 
-function createWrapper() {{
+function QueryWrapper({{ children }}: {{ children: ReactNode }}) {{
   const queryClient = new QueryClient({{ defaultOptions: {{ queries: {{ retry: false }} }} }});
-  return ({{ children }}: {{ children: ReactNode }}) => (
-    <QueryClientProvider client={{queryClient}}>{{children}}</QueryClientProvider>
-  );
+  return <QueryClientProvider client={{queryClient}}>{{children}}</QueryClientProvider>;
+}}
+
+function createWrapper() {{
+  return QueryWrapper;
 }}
 
 describe('use{class_name}', () => {{
@@ -319,7 +321,7 @@ describe('use{class_name}', () => {{
 
 def render_view_test(feature: str, class_name: str) -> str:
     return f"""import {{ describe, expect, it }} from 'vitest';
-import {{ render, screen }} from '@testing-library/react';
+import {{ render }} from '@testing-library/react';
 import {{ QueryClient, QueryClientProvider }} from '@tanstack/react-query';
 import {{ {class_name}View }} from '@/features/{feature}/presentation/components/{feature}-view';
 
@@ -330,9 +332,9 @@ function renderWithProviders(ui: React.ReactElement) {{
 
 describe('{class_name}View', () => {{
   it('renders without crashing', () => {{
-    renderWithProviders(<{class_name}View />);
+    const {{ container }} = renderWithProviders(<{class_name}View />);
 
-    expect(document.body).toBeTruthy();
+    expect(container.firstChild).toBeTruthy();
   }});
 }});
 """

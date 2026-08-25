@@ -84,3 +84,29 @@ storage entirely) or extend the lifetime deliberately.
 **Downstream impact:** Bearer tokens don't survive a closed tab by default.
 Projects needing "remember me" behavior implement it explicitly rather than
 inheriting it silently.
+
+---
+
+## 2026-08-25 — Use-cases are classes with constructor DI, not plain functions
+
+**Decision:** `LoginUseCase`, `LogoutUseCase`, `RestoreAuthSessionUseCase`,
+and the scaffold generator's generated use-cases are PascalCase classes
+taking their dependencies via constructor injection and exposing an
+`execute()` method, not plain verb+noun functions.
+
+**Reasoning:** The original build brief for this template specified plain
+functions ("verb+noun functions... not classes, since that's the idiomatic
+TS/React shape"). During the build, classes were used instead to mirror
+`flutter-starter`'s own use-case pattern exactly — that mirroring wasn't
+flagged as a deviation at the time it happened. Reviewed explicitly
+afterward and kept deliberately: sibling-consistency between the two
+templates (an agent moving between `flutter-starter` and `web-starter`
+sees the same use-case shape in both) outweighs matching idiomatic
+React/TS style for this one pattern.
+
+**Downstream impact:** Every generated use-case (via
+`skills/scripts/generate_feature_scaffold.py`) is a class with constructor
+DI. A project preferring plain functions instead changes the scaffold
+generator's use-case templates and `clean-code-doctrine.md`'s naming rule
+in one pass — the pattern is centralized enough that this is a template-owned
+decision, not something scattered across every feature.
