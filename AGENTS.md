@@ -25,7 +25,8 @@ Read `skills/references/token-management.md` once per session, alongside `skills
 
 1. Read **`skills/START_HERE.md`** and pick the workflow that matches the task.
 2. Read every **`skills/<path>/SKILL.md`** listed in that workflow **before** writing code.
-3. For any code change, also skim:
+3. For the first code change this session, also skim (then treat as cached — see
+   `skills/references/token-management.md`):
    - `skills/references/template-invariants.md`
    - `skills/references/clean-code-doctrine.md`
 4. Finish with **`skills/quality/nextjs-code-review/SKILL.md`** when the task changes production code.

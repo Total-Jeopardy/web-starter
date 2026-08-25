@@ -60,6 +60,28 @@ orient itself.
 
 ---
 
+## Session read cache — the actual biggest lever
+
+Neither Caveman nor Graphify helps with this one; it's a discipline, not a tool, and
+it costs more than both combined when skipped.
+
+- Once you've read a doctrine or skill file this session (`template-invariants.md`,
+  `clean-code-doctrine.md`, any `SKILL.md`), treat it as cached. Do not re-open it
+  later in the same session on the assumption it "might have changed" — nothing in
+  this repo rewrites itself mid-session. Re-read only if you yourself just edited it.
+- `AGENTS.md` Step 1 says to skim `template-invariants.md` and `clean-code-doctrine.md`
+  "for any code change." Read that as *first* code change this session, not every
+  code change. By the third feature touched in one session, both should already be
+  in context.
+- Checking a single rule from a long `SKILL.md` (e.g. `nextjs-debugging` at 400+
+  lines)? Grep for the heading or rule name first, read only that section. Don't
+  reload the whole file to confirm one line.
+- Large, mostly-mechanical work (bulk scaffolding, a multi-file generation pass,
+  broad exploratory search across an unfamiliar area) belongs in a subagent/background
+  task when your tooling supports one — it does the reading and writing in its own
+  context, and only its summary lands back in yours. Keep the main thread for
+  decisions, not for holding every file it took to reach them.
+
 ## Where this fits in the workflow
 
 Read this file once per session, alongside `skills/START_HERE.md`. Don't re-verify tool

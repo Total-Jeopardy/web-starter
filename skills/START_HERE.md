@@ -6,7 +6,9 @@
 
 ## Core Context
 
-Read these first for any non-trivial task:
+Read these once at the start of a session, before the first non-trivial task —
+not again per task. See `skills/references/token-management.md` for the session
+read-cache rule this depends on.
 - `skills/SKILLS.md`
 - `skills/references/template-invariants.md`
 - `skills/references/clean-code-doctrine.md`
