@@ -1,0 +1,49 @@
+'use client';
+
+export function LoginForm() {
+  const { login, isLoggingIn, authState } = useAuth();
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await login({ phone, password });
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-lg border p-6">
+      <_LoginFields phone={phone} password={password} onPhoneChange={setPhone} onPasswordChange={setPassword} />
+      {authState.status === 'error' ? <p className="text-sm text-destructive">{authState.message}</p> : null}
+      <Button type="submit" className="w-full" disabled={isLoggingIn}>
+        {isLoggingIn ? 'Logging in…' : 'Log in'}
+      </Button>
+    </form>
+  );
+}
+
+interface LoginFieldsProps {
+  phone: string;
+  password: string;
+  onPhoneChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+}
+
+/** Split out once the parent owns more than one visual region or callback branch. */
+function _LoginFields({ phone, password, onPhoneChange, onPasswordChange }: LoginFieldsProps) {
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label htmlFor="phone" className="text-sm font-medium">
+          Phone
+        </label>
+        <Input id="phone" value={phone} onChange={(e) => onPhoneChange(e.target.value)} />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="password" className="text-sm font-medium">
+          Password
+        </label>
+        <Input id="password" type="password" value={password} onChange={(e) => onPasswordChange(e.target.value)} />
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,26 @@
+import { describe, expect, it } from 'vitest';
+import { LoginUseCase } from '@/examples/reference-features/auth/domain/use-cases/login-use-case';
+import { FakeAuthRepository } from '../../../fakes/fake-auth-repository';
+import { FakeTokenStorage } from '../../../fakes/fake-token-storage';
+
+describe('LoginUseCase', () => {
+  it('saves tokens on success', async () => {
+    const tokenStorage = new FakeTokenStorage();
+    const useCase = new LoginUseCase(FakeAuthRepository.success(), tokenStorage);
+
+    const result = await useCase.execute('0240000000', 'secret');
+
+    expect(result.ok).toBe(true);
+    expect(tokenStorage.savedAccessToken).toBe('access-token');
+  });
+
+  it('does not save tokens on failure', async () => {
+    const tokenStorage = new FakeTokenStorage();
+    const useCase = new LoginUseCase(FakeAuthRepository.error(), tokenStorage);
+
+    const result = await useCase.execute('0240000000', 'wrong');
+
+    expect(result.ok).toBe(false);
+    expect(tokenStorage.savedAccessToken).toBeNull();
+  });
+});

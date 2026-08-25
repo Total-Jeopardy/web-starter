@@ -1,0 +1,33 @@
+import { NextResponse, type NextRequest } from 'next/server';
+import { accessForPath } from '@/core/router/route-registry';
+import { redirectForSession } from '@/core/router/route-guards';
+import type { SessionState } from '@/core/session/session-state';
+
+const SESSION_HINT_COOKIE = 'session_hint';
+
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const access = accessForPath(pathname);
+
+  const hasSessionHint = request.cookies.has(SESSION_HINT_COOKIE);
+  const session: SessionState = hasSessionHint
+    ? { status: 'authenticated', session: { userId: 'unknown' } }
+    : { status: 'guest' };
+
+  const redirectPath = redirectForSession({
+    session,
+    access,
+    signInPath: '/login',
+    signedInPath: '/',
+  });
+
+  if (redirectPath && redirectPath !== pathname) {
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

@@ -1,0 +1,11 @@
+export class LogoutUseCase {
+  constructor(
+    private readonly tokenStorage: TokenStorage,
+    private readonly authRepository: AuthRepository,
+  ) {}
+
+  async execute(): Promise<void> {
+    await this.tokenStorage.clearTokens();
+    await this.authRepository.clearPersistedSession();
+  }
+}

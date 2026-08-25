@@ -1,0 +1,21 @@
+features/your-feature/
+  data/
+    repositories/
+      your-feature-repository-impl.ts
+    sources/
+      your-feature-remote-source.ts
+  domain/
+    entities/
+      your-feature-item.ts
+      your-feature-state.ts
+    repositories/
+      your-feature-repository.ts
+    use-cases/
+      load-your-feature-use-case.ts
+  presentation/
+    hooks/
+      use-your-feature.ts
+    stores/
+      your-feature-store.ts
+    components/
+      your-feature-view.tsx

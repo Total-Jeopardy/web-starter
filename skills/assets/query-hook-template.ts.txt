@@ -1,0 +1,60 @@
+'use client';
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { unwrapOrThrow } from '@/core/network/api-result';
+import { getApiClient } from '@/core/network/api-client';
+import { getTokenStorage } from '@/core/auth/token-storage-provider';
+import { useAuthStore } from '@/examples/reference-features/auth/presentation/stores/auth-store';
+
+function buildDependencies() {
+  const tokenStorage = getTokenStorage();
+  const repository = new AuthRepositoryImpl(new AuthRemoteSource(getApiClient()), new AuthLocalSource());
+  return {
+    tokenStorage,
+    repository,
+    loginUseCase: new LoginUseCase(repository, tokenStorage),
+  };
+}
+
+/**
+ * Wraps use-cases/repositories with TanStack Query — the single entry point
+ * a component should use. UI renders and delegates; this hook and the
+ * use-cases it wraps own the transitions.
+ */
+export function useAuth() {
+  const queryClient = useQueryClient();
+  const authState = useAuthStore((s) => s.state);
+  const setAuthState = useAuthStore((s) => s.setState);
+
+  const restoreQuery = useQuery({
+    queryKey: ['reference-auth', 'restore-session'],
+    queryFn: async () => {
+      const { repository, tokenStorage } = buildDependencies();
+      const useCase = new RestoreAuthSessionUseCase(tokenStorage, repository);
+      return useCase.execute();
+    },
+    staleTime: Infinity,
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async ({ phone, password }: { phone: string; password: string }) => {
+      setAuthState({ status: 'loading' });
+      const { loginUseCase } = buildDependencies();
+      return unwrapOrThrow(await loginUseCase.execute(phone, password));
+    },
+    onSuccess: (tokens) => {
+      setAuthState({ status: 'authenticated', user: { id: tokens.id, userName: tokens.userName, role: tokens.role } });
+      void queryClient.invalidateQueries({ queryKey: ['reference-auth'] });
+    },
+    onError: (error: Error) => {
+      setAuthState({ status: 'error', message: error.message });
+    },
+  });
+
+  return {
+    authState,
+    isRestoring: restoreQuery.isLoading,
+    login: loginMutation.mutateAsync,
+    isLoggingIn: loginMutation.isPending,
+  };
+}

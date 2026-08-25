@@ -1,0 +1,29 @@
+export interface AuthRepository {
+  login(phone: string, password: string): Promise<Result<AuthTokens, ApiError>>;
+  readPersistedUser(): Promise<User | null>;
+  saveAuthenticatedUser(user: User): Promise<void>;
+  clearPersistedSession(): Promise<void>;
+}
+
+export class AuthRepositoryImpl implements AuthRepository {
+  constructor(
+    private readonly remote: AuthRemoteSource,
+    private readonly local: AuthLocalSource,
+  ) {}
+
+  login(phone: string, password: string): Promise<Result<AuthTokens, ApiError>> {
+    return this.remote.login(phone, password);
+  }
+
+  readPersistedUser(): Promise<User | null> {
+    return this.local.readUser();
+  }
+
+  saveAuthenticatedUser(user: User): Promise<void> {
+    return this.local.saveUser(user);
+  }
+
+  clearPersistedSession(): Promise<void> {
+    return this.local.clearUser();
+  }
+}

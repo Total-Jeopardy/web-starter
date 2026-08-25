@@ -1,0 +1,15 @@
+export class LoginUseCase {
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly tokenStorage: TokenStorage,
+  ) {}
+
+  async execute(phone: string, password: string): Promise<Result<AuthTokens, ApiError>> {
+    const result = await this.authRepository.login(phone, password);
+    if (!result.ok) return result;
+
+    await this.tokenStorage.saveTokens(result.value.accessToken, result.value.refreshToken);
+    await this.authRepository.saveAuthenticatedUser(authTokensToUser(result.value));
+    return result;
+  }
+}
