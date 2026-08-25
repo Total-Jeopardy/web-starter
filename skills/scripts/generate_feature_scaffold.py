@@ -3,7 +3,7 @@
 
 Usage:
     python skills/scripts/generate_feature_scaffold.py booking-history
-    python skills/scripts/generate_feature_scaffold.py booking-history --with-tests
+    python skills/scripts/generate_feature_scaffold.py booking-history --no-tests
     python skills/scripts/generate_feature_scaffold.py booking-history --no-use-cases
 """
 
@@ -360,16 +360,16 @@ def main() -> int:
         "--with-tests",
         dest="with_tests",
         action="store_true",
-        help="also create matching test/features/<feature>/ scaffold (default: off — this "
-        "template ships no example project feature, so generated tests are opt-in)",
+        help="also create matching test/features/<feature>/ scaffold (default: on)",
     )
     parser.add_argument(
         "--no-tests",
         dest="with_tests",
         action="store_false",
-        help="skip generated test/features/<feature>/ scaffold (this is already the default)",
+        help="skip generated test/features/<feature>/ scaffold — use only when you "
+        "intentionally want source files without matching tests",
     )
-    parser.set_defaults(with_use_cases=True, with_tests=False)
+    parser.set_defaults(with_use_cases=True, with_tests=True)
     args = parser.parse_args()
 
     feature = args.feature_name.strip().lower()

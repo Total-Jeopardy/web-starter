@@ -113,6 +113,9 @@ Generate the feature plus matching unit-test scaffolding explicitly:
 python skills/scripts/generate_feature_scaffold.py booking-history --with-tests
 ```
 
+(`--with-tests` is already the default — this flag is only useful for
+readability in scripts/CI that want the behavior stated explicitly.)
+
 Skip use-cases for a trivial feature:
 
 ```bash
