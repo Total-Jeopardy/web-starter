@@ -103,6 +103,22 @@ python skills/scripts/validate_skills.py
 
 ---
 
+## Step 6 — Before every `git push` (non-negotiable)
+
+Run `bash tool/pre_push_check.sh` (or confirm `python tool/install_git_hooks.py`
+was already run this clone, which makes this automatic). It runs the exact
+same checks as `.github/workflows/ci.yml`'s `validate` job — if it fails
+locally, the push will fail in CI too. **Never push on a failing check,
+and never push with `--no-verify` to route around a real failure** — fix
+the failure or, if it's a false positive, fix the check itself and verify
+that fix against a genuine fresh clone (not the working tree you've been
+iterating in — leftover `node_modules`/`.next` or an untracked file can
+pass locally while CI, starting from nothing, fails). This project has had
+pushes land with CI red because a check was verified only against a local
+working tree instead of a fresh clone — don't repeat that.
+
+---
+
 ## If you cannot read files
 
 Ask the user to attach `skills/START_HERE.md` and the relevant `SKILL.md`, or paste their contents. Do not guess project conventions.

@@ -21,10 +21,17 @@ the template core.
 git clone https://github.com/Total-Jeopardy/web-starter my_new_project
 cd my_new_project
 python tool/rename_app.py --app-name "My App" --package-name my-app
+python tool/install_git_hooks.py
 npm install
 cp .env.example .env.local
 npm run dev
 ```
+
+`tool/install_git_hooks.py` installs a pre-push hook that runs the exact
+same checks as CI (`tool/pre_push_check.sh`) before any `git push` leaves
+your machine, and blocks the push if any of them fail. Run it once per
+clone — `.git/hooks/` is never tracked by git, so every fresh checkout
+needs this step.
 
 ## Default behavior
 
